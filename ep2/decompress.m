@@ -1,22 +1,38 @@
 function decompress (compressedImg, method, k, h)
   img = imread(compressedImg);
-  p = rows(img)
-  #bilinear matrix to calculate coeficients
-  B = double([1, 0, 0, 0; 1, 0, h, 0; 1, h, 0, 0; 1, h, h, h*h]);
-  decompressed = zeros(p + (p-1)*k, p + (p-1)*k, 3);
-  for channel = 1:3
-    for y = 1:p-h
-      for x = 1:p-h
-        p0 = img(x, y, channel)
-        p1 = img(x+h, y, channel)
-        p2 = img(x, y+h, channel)
-        p3 = img(x+h, y+h, channel)
-        square_vertices = [p0; p1; p2; p3];
-        coef = double(B) \ double(square_vertices)
-        square = fill_square(coef, k, x, y);
-        decompressed(x:x+k, y:y+k, channel) = square;
-      endfor 
+  n = rows(img)
+  decompressed = ones(n + (n-1)*k, n + (n-1)*k, 3);
+  for c = 1:3
+    ix = 1;
+    for x = 1:(n-1)
+      iy = 1;
+      for y = 1:(n-1)
+  %      debugging
+  %      printf("(%d, %d)\n", x, y);
+  %      printf("(%d, %d)\n", x+h, y);
+  %      printf("(%d, %d)\n", x, y+h);
+  %      printf("(%d, %d)\n", x+h, y+h);
+  %      v+=4;
+  %      printf("------------\n");
+        q1 = img(x, y, c); 
+        q2 = img(x+1, y, c);
+        q3 = img(x, y+1, c);
+        q4 = img(x+1, y+1, c);
+        # bilinear matrix to calculate coeficients
+        B = double([1, x, y, x*y; 1, x, y+1, x*(y+1); 1, x+1, y, (x+1)*y; 1, (x+1), (y+1), (x+1)*(y+1)]);
+        coef = B \ double([q1; q2; q3; q4]);
+        interpolated_pixels = fill_square(coef, k, x, y);
+        %p = rows(interpolated_pixels);
+%        decompressed(ix, iy, c) = img(x,y, c);
+%        decompressed(ix + k + 1, iy, c) = img(x+1, y, c);
+%        decompressed(ix, iy + k + 1, c) = img(x , y+1, c);
+%        decompressed(ix + k + 1, iy + k + 1, c) = img(x+1, y+1, c);
+        decompressed(ix + 1:ix + k, iy + 1: iy + k, c) = interpolated_pixels; 
+        iy += k + 1;
+      endfor
+      ix += k + 1;
     endfor
    endfor
+%   decompressed
   imwrite(decompressed, "decompressed.png")
 endfunction
