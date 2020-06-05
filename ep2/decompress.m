@@ -1,12 +1,13 @@
 function decompress (compressedImg, method, k, h)
   img = imread(compressedImg);
-  n = rows(img)
-  decompressed = ones(n + (n-1)*k, n + (n-1)*k, 3);
+  n = rows(img);
+  m = columns(img);
+  decompressed = ones(n + (n-1)*k, m + (m-1)*k, 3);
   for c = 1:3
     ix = 1;
     for x = 1:(n-1)
       iy = 1;
-      for y = 1:(n-1)
+      for y = 1:(m-1)
   %      debugging
   %      printf("(%d, %d)\n", x, y);
   %      printf("(%d, %d)\n", x+h, y);
