@@ -1,7 +1,7 @@
 function decompressed = bicubic(decompressed, k, h)
   n = rows(decompressed);
   finalSize = n+(n-1)*k;
-  % matrix to be filled by interpolation
+  % image to be filled by interpolation
   decompressed = createEmptySquares(decompressed, k, finalSize);
   % given matrix
   B = double([1, 0, 0, 0; 1, h, h.^2, h.^3; 0, 1, 0, 0; 0, 1, 2*h, 3*h.^2]);
@@ -36,12 +36,10 @@ function decompressed = bicubic(decompressed, k, h)
         % interpolate pixels inside square
         for i = x:x+(k+1)
           for j = y:y+(k+1)
-            if (i != x && j != y)
-              R = [1, (i - x), (i - x).^2, (i - x).^3];
-              S = [1; (j - y); (j - y).^2; (j - y).^3];
-              pixel = R * coef * S;
-              decompressed(i, j, c) = pixel;
-            endif
+            R = [1, (i - x), (i - x).^2, (i - x).^3];
+            S = [1; (j - y); (j - y).^2; (j - y).^3];
+            pixel = R * coef * S;
+            decompressed(i, j, c) = pixel;
           endfor
         endfor
       endfor
