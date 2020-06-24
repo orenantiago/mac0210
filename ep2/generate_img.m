@@ -1,5 +1,5 @@
 function generate_img (w, h)
-  img = zeros(w,h,3)
+  img = zeros(w,h,3);
   for i = 1:w
     for j = 1:h
       img(i, j, 1) = sin(i);

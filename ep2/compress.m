@@ -1,5 +1,6 @@
 function compress (originalImg, k)
     img = imread(originalImg);
-    resultImg = img(k+1:k+1:end, k+1:k+1:end, :);
+    n = rows(img);
+    resultImg = img(1:k+1:n, 1:k+1:n, :);
     imwrite(resultImg, "compressed.png");
 endfunction
