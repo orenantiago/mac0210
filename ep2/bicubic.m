@@ -4,7 +4,7 @@ function decompressed = bicubic(decompressed, k, h)
   % image to be filled by interpolation
   decompressed = createEmptySquares(decompressed, k, finalSize);
   % given matrix
-  B = double([1, 0, 0, 0; 1, h, h.^2, h.^3; 0, 1, 0, 0; 0, 1, 2*h, 3*h.^2]);
+  B = [1, 0, 0, 0; 0, 0, 1, 0; -3./(h*h), 3./(h*h), -2./h, -1./h; 2./(h.^3), -2./(h.^3), 1./(h.^2), 1./(h.^2)];
   % for each square of decompressed matrix
   for x = 1:(k+1):finalSize-(k+1)
     for y = 1:(k+1):finalSize-(k+1)
@@ -15,7 +15,7 @@ function decompressed = bicubic(decompressed, k, h)
       dfdyx0y0 = dfdy(decompressed, x, y, finalSize, k, h);
       dfdyx0y1 = dfdy(decompressed, x, y+(k+1), finalSize, k, h);
       fx1y0 = decompressed(x+(k+1), y, :);
-      fx1y1 = decompressed(x+(k+1), y+k+1, :);
+      fx1y1 = decompressed(x+(k+1), y+(k+1), :);
       dfdyx1y0 = dfdy(decompressed, x+(k+1), y, finalSize, k, h);
       dfdyx1y1 = dfdy(decompressed, x+(k+1), y+(k+1), finalSize, k, h);
       dfdxx0y0 = dfdx(decompressed, x, y, finalSize, k, h);
@@ -32,14 +32,20 @@ function decompressed = bicubic(decompressed, k, h)
                     fx1y0(c), fx1y1(c), dfdyx1y0(c), dfdyx1y1(c);
                     dfdxx0y0(c), dfdxx0y1(c), dfdxyx0y0(c), dfdxyx0y1(c);
                     dfdxx1y0(c), dfdxx1y1(c), dfdxyx1y0(c), dfdxyx1y1(c)]);
-        coef = inv(B) * Q * inv(transpose(B));
+        coef = B * Q * transpose(B);
         % interpolate pixels inside square
         for i = x:x+(k+1)
           for j = y:y+(k+1)
-            R = [1, (i - x), (i - x).^2, (i - x).^3];
-            S = [1; (j - y); (j - y).^2; (j - y).^3];
-            pixel = R * coef * S;
-            decompressed(i, j, c) = pixel;
+            if (i != x && j != y)
+              % get pixel coordinates (u,v) mapped to the its square 
+              u = ((i-x)/(k+1));
+              v = ((j-y)/(k+1));
+              % fit pixels inside square
+              R = [1, u*h, (u*h).^2, (u*h).^3];
+              S = [1; (v*h); (v*h).^2; (v*h).^3];
+              pixel = R * coef * S;
+              decompressed(i, j, c) = pixel;
+            endif
           endfor
         endfor
       endfor
