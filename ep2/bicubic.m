@@ -1,6 +1,7 @@
 function decompressed = bicubic(decompressed, k, h)
   n = rows(decompressed);
   finalSize = n+(n-1)*k;
+  channels = size(decompressed, 3)
   % image to be filled by interpolation
   decompressed = createEmptySquares(decompressed, k, finalSize);
   % given matrix
@@ -27,7 +28,7 @@ function decompressed = bicubic(decompressed, k, h)
       dfdxyx1y0 = dfdxy(decompressed, x+(k+1), y, finalSize, k, h);
       dfdxyx1y1 = dfdxy(decompressed, x+(k+1), y+(k+1), finalSize, k, h);
       % for each color channel, evaluate pixels inside square
-      for c = 1:3
+      for c = 1:channels
         Q = double([fx0y0(c), fx0y1(c), dfdyx0y0(c), dfdyx0y1(c);
                     fx1y0(c), fx1y1(c), dfdyx1y0(c), dfdyx1y1(c);
                     dfdxx0y0(c), dfdxx0y1(c), dfdxyx0y0(c), dfdxyx0y1(c);
