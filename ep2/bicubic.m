@@ -1,3 +1,7 @@
+% Laboratório de Métodos Numéricos - EP 2
+% Daniel Silva Nunes - 10297612
+% Renan Tiago dos Santos Silva - 9793606
+
 function decompressed = bicubic(decompressed, k, h)
   n = rows(decompressed);
   finalSize = n+(n-1)*k;

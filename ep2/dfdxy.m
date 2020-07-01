@@ -1,3 +1,7 @@
+% Laboratório de Métodos Numéricos - EP 2
+% Daniel Silva Nunes - 10297612
+% Renan Tiago dos Santos Silva - 9793606
+
 % evaluate df^2 /dxdy approximation
 function dxy = dfdxy(f, i, j, finalSize, k, h)
   if i <= 1

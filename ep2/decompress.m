@@ -1,3 +1,7 @@
+% Laboratório de Métodos Numéricos - EP 2
+% Daniel Silva Nunes - 10297612
+% Renan Tiago dos Santos Silva - 9793606
+
 function decompress (compressedImg, method, k, h)
   img = imread(compressedImg);
   if (method == 1)

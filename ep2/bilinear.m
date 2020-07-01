@@ -1,3 +1,7 @@
+% Laboratório de Métodos Numéricos - EP 2
+% Daniel Silva Nunes - 10297612
+% Renan Tiago dos Santos Silva - 9793606
+
 function decompressed = bilinear(img, k, h)
   n = rows(img);
   channels = size(img, 3)
